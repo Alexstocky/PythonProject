@@ -1,8 +1,8 @@
 import random
 
-def genGrid(height,width,impasses, spawn, numDirt): #Generates a tuple of tuples of dictionaries representing the 'gamespace'. Height and width are the height and width of the space. Walls is a list  Impasses of a list of coordinates of place that are inpassable. Spawn right now only only contains the start position of doggo, but will contain roomba at some point. numDirt is the number of dirts to be placed
-    grid = []
-    for h in range(height):
+def genGrid(height,width,impasses, spawn, numDirt): #Generates a tuple of tuples of dictionaries representing the 'gamespace'. Height and width are the height and width of the space.
+    grid = []                                       #Impasses of a list of coordinates of place that are inpassable. Spawn right now only only contains the start position of doggo,
+    for h in range(height):                         #but will contain roomba at some point. numDirt is the number of dirts to be placed
         grid.append([])
         for w in range(width):
             grid[h].append({'Impass':False, 'Doggo':False})
