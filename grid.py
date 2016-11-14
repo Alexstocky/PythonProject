@@ -1,4 +1,4 @@
-import ramdom
+import random
 
 class grid:
     def __init__(self,height,width,numDirt,impasses=[]): #Generates a tuple of tuples of dictionaries representing the 'gamespace'. Height is the number of tuples containing dictionaries. Width is the number of dictionaries in each tuple.
@@ -42,4 +42,4 @@ class grid:
                 s += wall+char
             
             s += wall+'\n'
-        return s+wall+'-'*(len(i)*2-1)+wall+'\
+        return s+wall+'-'*(len(i)*2-1)+wall+'\n'
