@@ -12,7 +12,7 @@ class dog:
             inst = ((0,0),(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1))[direc]
             x = min(max(self.dl[0]+inst[0],0),(len(self.grid.grid)-1))
             y = min(max(self.dl[1]+inst[1],0),(len(self.grid.grid[0])-1))
-            if not self.grid.grid[x][x] ['Impass'] == True:
+            if not self.grid.grid[x][y] ['Impass'] == True:
                 self.grid.grid[self.dl[0]][self.dl[1]] ['Doggo'] = False
                 self.grid.grid[x][y] ['Doggo'] = True
                 self.dl = (x,y)
