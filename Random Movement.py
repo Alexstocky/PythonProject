@@ -5,7 +5,8 @@ import random
 top = Tk()
 
 #Simple canvas with two lines to test whether the roomba will pass through walls
-grid = grid(100,100,0,[[5,5]])
+grid = grid(100,100,0,[])
+grid.addImpasses([[50,5],[50,6]])
 canvas = Canvas(top, height=500,width=500, bg="white")
 line1 = canvas.create_line((100,0),(100,100), width=5)
 line2 = canvas.create_line((0,100),(75,100), width=5)
@@ -16,7 +17,6 @@ for i in grid.impasses:
 wallsDict = {"line1":canvas.coords(line1), "line2":canvas.coords(line2)}
 
 canvas.pack()
-
 
 ###Roomba Movement
 
