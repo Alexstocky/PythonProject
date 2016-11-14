@@ -1,12 +1,17 @@
 from tkinter import *
+from grid import grid
 import time
 import random
 top = Tk()
 
 #Simple canvas with two lines to test whether the roomba will pass through walls
-canvas = Canvas(top, height=500,width=600, bg="white")
+grid = grid(100,100,0,[[5,5]])
+canvas = Canvas(top, height=500,width=500, bg="white")
 line1 = canvas.create_line((100,0),(100,100), width=5)
 line2 = canvas.create_line((0,100),(75,100), width=5)
+
+for i in grid.impasses:
+    canvas.create_rectangle(i[1]*5,i[0]*5,(i[1]+1)*5,(i[0]+1)*5, fill="black")
 
 wallsDict = {"line1":canvas.coords(line1), "line2":canvas.coords(line2)}
 
@@ -18,7 +23,7 @@ canvas.pack()
 #Boundaries
 x_min = 0
 y_min = 0
-x_max = 600
+x_max = 500
 y_max = 500
 
 def detect():
@@ -81,3 +86,4 @@ for t in range (1,500):
     time.sleep(0.1)
 
 top.mainloop()
+
