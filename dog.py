@@ -2,7 +2,7 @@ import random
 
 class dog:
 
-    def __init__(self,gridRef=grid,dl=(0,0)): #Set important values for the object, including linking it to the grid object, which /must/ be called prior to calling this one
+    def __init__(self,gridRef,dl=(0,0)): #Set important values for the object, including linking it to the grid object, which /must/ be called prior to calling this one
         self.hist = []
         self.dl = dl
         self.grid = gridRef
