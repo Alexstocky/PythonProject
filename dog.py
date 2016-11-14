@@ -9,20 +9,13 @@ class dog:
         self.grid.grid[dl[0]][dl[1]] ['Doggo'] = True
 
     def move(self, direc): #Edits the values of doggo's x&y to do the actual moving
-            self.grid.grid[self.dl[0]][self.dl[1]] ['Doggo'] = False
-            inst = ((0,1,0,0),(0,1,0,1),(1,1,1,0),(1,1,0,0),(1,1,1,1),(0,1,1,1),(1,0,1,1),(1,0,0,0),(1,1,1,0))[direc]
-            if inst[1]:
-                x = self.dl[0] + inst[0]
-            else:
-                x = self.dl[0] - inst[0]
-            if inst[3]:
-                y = self.dl[1] + inst[2]
-            else:
-                y = self.dl[1] - inst[2]
-            x = min(max(x,0),(len(self.grid.grid)-1))
-            y = min(max(y,0),(len(self.grid.grid[0])-1))
-            self.grid.grid[x][y] ['Doggo'] = True
-            self.dl = (x,y)
+            inst = ((0,0),(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1))[direc]
+            x = min(max(self.dl[0]+inst[0],0),(len(self.grid.grid)-1))
+            y = min(max(self.dl[1]+inst[1],0),(len(self.grid.grid[0])-1))
+            if not self.grid.grid[x][x] ['Impass'] == True:
+                self.grid.grid[self.dl[0]][self.dl[1]] ['Doggo'] = False
+                self.grid.grid[x][y] ['Doggo'] = True
+                self.dl = (x,y)
             return direc
     
     def engage(self, time, pd=0): #Engages the doggo's wandering ai for a period of time; dl is the spawn location; pd is the hypothetical 'last move' doggo made, defaults to standing still; time is number of 'turns' function runs for
