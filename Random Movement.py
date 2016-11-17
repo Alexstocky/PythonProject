@@ -36,13 +36,21 @@ def detect():
             a1,a2 = grid.impasses[n]
             b1,b2 = grid.impasses[n+1]
             if a1 - b1 == 0:
-                if rPositionY >= (a1-5) and rPositionX == a2:
-                    if (rPositionY + vy) >= a1:
-                        move = False
+                if rPositionY >= (a1-5) and rPositionY <= (a1+5) and rPositionX == a2:
+                    if rPositionY >= a1:
+                        if (rPositionY + vy) <= a1:
+                            move = False
+                    elif rPositionY <= a1:
+                        if (rPositionY + vy) >= a1:
+                            move = False
             elif a2 - b2 == 0:
-                if rPositionX >= (a2-5) and rPositionY == a1:
-                    if (rPositionX + vx) >= a2:
-                        move = False 
+                if rPositionX >= (a2-5) and rPositionX <= (a2+5) and rPositionY == a1:
+                    if rPositionX >= a2:
+                        if (rPositionX + vx) <= a2:
+                            move = False
+                    elif rPositionX <= a2:
+                        if (rPositionX + vx) >= a2:
+                            move = False
  
 #Create robot representation
 roomba= canvas.create_oval(0,0,10,10, fill="blue")
