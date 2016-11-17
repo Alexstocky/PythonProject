@@ -1,20 +1,23 @@
 from tkinter import *
-from grid import grid
+from grid import *
 import time
 import random
 top = Tk()
 
-#Simple canvas with two lines to test whether the roomba will pass through walls
-grid = grid(100,100,0,[])
-grid.addImpasses([[50,5],[50,6]])
+#Simple canvas with one line to test whether the roomba will pass through walls
+grid = grid(500,500,0,[])
+for h in range (100,103):
+    for w in range (0,75):
+        grid.addImpasses([[h,w]])
+
+for w in range (100,103):
+    for h in range (0,100):
+        grid.addImpasses([[h,w]])
+
 canvas = Canvas(top, height=500,width=500, bg="white")
-line1 = canvas.create_line((100,0),(100,100), width=5)
-line2 = canvas.create_line((0,100),(75,100), width=5)
 
 for i in grid.impasses:
-    canvas.create_rectangle(i[1]*5,i[0]*5,(i[1]+1)*5,(i[0]+1)*5, fill="black")
-
-wallsDict = {"line1":canvas.coords(line1), "line2":canvas.coords(line2)}
+    canvas.create_rectangle(i[1]*1,i[0]*1,(i[1]+1)*1,(i[0]+1)*1, fill="black")
 
 canvas.pack()
 
@@ -28,17 +31,19 @@ y_max = 500
 
 def detect():
     global move 
-    for n in range(1,len(wallsDict)+1):
-        a1,b1,a2,b2 = wallsDict["line" + str(n)]
-        if a1 - a2 == 0:
-            if rPositionX >= (a1 - 10) and rPositionY >= b1 and rPositionY <= b2:
-                if (rPositionX + vx) >= a1:
-                    move = False
-        elif b1 - b2 == 0:
-            if rPositionY >= (b1 - 10) and rPositionX >= a1 and rPositionX <= a2:
-                if (rPositionY + vy) >= b1:
-                    move = False
-
+    for n in range(0,len(grid.impasses)):
+        if n < len(grid.impasses) - 1:
+            a1,a2 = grid.impasses[n]
+            b1,b2 = grid.impasses[n+1]
+            if a1 - b1 == 0:
+                if rPositionY >= (a1-5) and rPositionX == a2:
+                    if (rPositionY + vy) >= a1:
+                        move = False
+            elif a2 - b2 == 0:
+                if rPositionX >= (a2-5) and rPositionY == a1:
+                    if (rPositionX + vx) >= a2:
+                        move = False 
+ 
 #Create robot representation
 roomba= canvas.create_oval(0,0,10,10, fill="blue")
 
