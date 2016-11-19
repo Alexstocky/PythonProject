@@ -1,0 +1,49 @@
+# import library
+from tkinter import *
+import tkinter as tk 
+from tkinter.ttk import *
+
+# set up the GUI window
+window = Tk()
+window.title("Rooma!")
+window.geometry("1350x650+0+0")
+window.configure(background ="white")
+
+
+
+#Creating the arena for the robot with a width of 1000 px, a height of 650px
+# background color witch will be 'white'
+canvas = Canvas(window, width = 1000, height = 650, bd = 5, relief="raise", bg = "white")
+
+
+#Getting Coords:
+def generateImage(x,y,canvas):
+    filename = PhotoImage(file = "dirt.png")
+    image = canvas.create_image(x, y, anchor=NE, image=filename)
+    print(filename)
+    Tk.update()
+
+
+def key(event):
+    print ("pressed", repr(event.char))
+
+def callback(event):
+    print ("Coord:", event.x, event.y)
+    generateImage(event.x,event.y,canvas)
+
+    
+canvas.bind("<Key>", key)  
+canvas.bind("<Button-1>", callback,generateImage)
+canvas.pack(side=LEFT)
+
+
+
+#Right side of the interface where it will be displayed buttons, etc.
+RightFrame= Frame(window, width = 350, height = 650, relief = "raise")
+    #Buttons / in progress.
+
+RightFrame.pack(side=RIGHT)
+
+
+#end of the GUI window
+window.mainloop()
