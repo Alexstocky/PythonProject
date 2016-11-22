@@ -1,11 +1,13 @@
-# import library
+# import libraries/files
+from grid import grid
 from tkinter import *
 import tkinter as tk 
 from tkinter.ttk import *
 
+
 # set up the GUI window
 window = Tk()
-window.title("Rooma!")
+window.title("Roomba!")
 window.geometry("1350x650+0+0")
 window.configure(background ="white")
 
@@ -16,34 +18,52 @@ window.configure(background ="white")
 canvas = Canvas(window, width = 1000, height = 650, bd = 5, relief="raise", bg = "white")
 
 
-#Getting Coords:
-def generateImage(x,y,canvas):
-    filename = PhotoImage(file = "dirt.png")
-    image = canvas.create_image(x, y, anchor=NE, image=filename)
-    print(filename)
-    Tk.update()
+###Getting Coords:
+##def generateImage(x,y,canvas):
+##    filename = PhotoImage(file = "dirt.png")
+##    image = canvas.create_image(x, y, anchor=NE, image=filename)
+##    print(filename)
+##    Tk.update()
+##
+##
+##def key(event):
+##    print ("pressed", repr(event.char))
+##
+##def callback(event):
+##    print ("Coord:", event.x, event.y)
+##    generateImage(event.x,event.y,canvas)
+##
+##    
+##canvas.bind("<Key>", key)  
+##canvas.bind("<Button-1>", callback,generateImage)
+
+grid = grid(10,10,7,[])
+print(grid.dirtlist)
 
 
-def key(event):
-    print ("pressed", repr(event.char))
 
-def callback(event):
-    print ("Coord:", event.x, event.y)
-    generateImage(event.x,event.y,canvas)
-
-    
-canvas.bind("<Key>", key)  
-canvas.bind("<Button-1>", callback,generateImage)
 canvas.pack(side=LEFT)
-
 
 
 #Right side of the interface where it will be displayed buttons, etc.
 RightFrame= Frame(window, width = 350, height = 650, relief = "raise")
-    #Buttons / in progress.
+#Start button 
+sbutton = Button(window, text = "Start", command = grid)
+sbutton.pack(side = TOP)
+ 
 
-RightFrame.pack(side=RIGHT)
+ #In Progress.
 
 
+def on_closing():
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        window.destroy()
+#Quit button
+endbutton = Button(window,text = "Quit", command = on_closing)
+endbutton.pack(side = BOTTOM)
+
+
+RightFrame.pack()
 #end of the GUI window
+window.protocol("WM_DELETE_WINDOW", on_closing)
 window.mainloop()
