@@ -22,6 +22,7 @@ class grid:
     def __init__(self,height,width,numDirt,impasses=[]): #Generates a tuple of tuples of dictionaries representing the 'gamespace'. Height is the number of tuples containing dictionaries. Width is the number of dictionaries in each tuple.
         self.grid = []                                   #Impasses is a list of coordinates of place that are inpassable. Spawn right now only only contains the start position of doggo, but will contain roomba at some point. numDirt is the number of dirts to be placed
         self.impasses = []
+        self.dirtlist = []
         for h in range(height):
             self.grid.append([])
             for w in range(width):
@@ -30,14 +31,23 @@ class grid:
         tuple(self.grid)
         self.addImpasses(impasses)
         i = 0
+        xn = -1
+        yn = -1 
         for x in self.grid:
+            xn += 1
             for y in x:
+                yn += 1
                 if random.random() < numDirt/(len(self.grid)*len(x)-i) and y ['Impass'] == False: #Dirt is set randomly, probability = Amount of dirt to be placed/Number of blocks in which dirt can be placed. 
-                    numDirt -= 1                                                             #The equations tends towards an even distibution, but allows variation.
+                    numDirt -= 1                                                           #The equations tends towards an even distibution, but allows variation.
                     y ['Dirt'] = True
+                    #Adding the coords of xn and xn to the dirtlist - list.
+                    self.dirtlist.append([xn,yn])
                 else:
                     y ['Dirt'] = False
                 i += 1
+        #print(self.dirtlist)
+                
+
 
     def represent(self, wall='|'): # Purely for testing purposes, this produces am ascii representation of the grid at a given time. 'X' for impass, 'D' for dirt, 'G' for Dog, ' ' for empty space and '&' if the dog stands on dirt
         s = ''
@@ -53,6 +63,7 @@ class grid:
                             char = '&'
                         else:
                             char = 'D'
+                        
                     elif x['Doggo']:
                         char = 'G'
                     else:
