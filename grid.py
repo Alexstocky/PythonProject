@@ -17,12 +17,16 @@ class grid:
     def addImpasses(self, impasses):
         self.impasses += impasses
         for x in impasses:
-             self.grid[x[0]][x[1]] ['Impass'] = True
+            if x[0] >= self.height or x[1] >= self.width:
+                raise IndexError('Grid reference out of range')
+            self.grid[x[0]][x[1]] ['Impass'] = True
     
     def __init__(self,height,width,numDirt,impasses=[]): #Generates a tuple of tuples of dictionaries representing the 'gamespace'. Height is the number of tuples containing dictionaries. Width is the number of dictionaries in each tuple.
         self.grid = []                                   #Impasses is a list of coordinates of place that are inpassable. Spawn right now only only contains the start position of doggo, but will contain roomba at some point. numDirt is the number of dirts to be placed
         self.impasses = []
         self.dirtlist = []
+        self.height = height
+        self.width = width
         for h in range(height):
             self.grid.append([])
             for w in range(width):
