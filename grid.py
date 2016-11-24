@@ -49,10 +49,10 @@ class grid:
                 
 
 
-    def represent(self, wall='|'): # Purely for testing purposes, this produces am ascii representation of the grid at a given time. 'X' for impass, 'D' for dirt, 'G' for Dog, ' ' for empty space and '&' if the dog stands on dirt
+    def __str__(self): # Purely for testing purposes, this produces am ascii representation of the grid at a given time. 'X' for impass, 'D' for dirt, 'G' for Dog, ' ' for empty space and '&' if the dog stands on dirt
         s = ''
         for i in self.grid:
-            s += wall+'-'*(len(i)*2-1)+wall+'\n'
+            s += '|'+'-'*(len(i)*2-1)+'|'+'\n'
             for x in i:
                 char = ''
                 if x['Impass']:
@@ -63,12 +63,11 @@ class grid:
                             char = '&'
                         else:
                             char = 'D'
-                        
                     elif x['Doggo']:
                         char = 'G'
                     else:
                         char = ' '
-                s += wall+char
+                s += '|'+char
             
-            s += wall+'\n'
-        return s+wall+'-'*(len(i)*2-1)+wall+'\n'
+            s += '|'+'\n'
+        return s+'|'+'-'*(len(i)*2-1)+'|'+'\n'
