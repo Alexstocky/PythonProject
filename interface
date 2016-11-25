@@ -1,69 +1,275 @@
-# import libraries/files
-from grid import grid
 from tkinter import *
 import tkinter as tk 
 from tkinter.ttk import *
-
-
-# set up the GUI window
-window = Tk()
-window.title("Roomba!")
-window.geometry("1350x650+0+0")
-window.configure(background ="white")
+import random
+import time
 
 
 
-#Creating the arena for the robot with a width of 1000 px, a height of 650px
-# background color witch will be 'white'
-canvas = Canvas(window, width = 1000, height = 650, bd = 5, relief="raise", bg = "white")
+# GRID DICTIONARY :
+# 0 - Free space
+# 1 - Impassable Object eg. wall/table/chair
+# 2 - Dirt
+
+####################################################################
+#Generating an object by clicking on the grid
+def generateImage(x,y):
+    canvas.create_rectangle(x, y, x+10, y+10,fill="blue")
+    Tk.update()
 
 
-###Getting Coords:
-##def generateImage(x,y,canvas):
-##    filename = PhotoImage(file = "dirt.png")
-##    image = canvas.create_image(x, y, anchor=NE, image=filename)
-##    print(filename)
-##    Tk.update()
-##
-##
-##def key(event):
-##    print ("pressed", repr(event.char))
-##
-##def callback(event):
-##    print ("Coord:", event.x, event.y)
-##    generateImage(event.x,event.y,canvas)
-##
-##    
-##canvas.bind("<Key>", key)  
-##canvas.bind("<Button-1>", callback,generateImage)
+def key(event):
+    print ("pressed", repr(event.char))
 
-grid = grid(10,10,7,[])
-print(grid.dirtlist)
+def callback(event):
+    print ("Coord:", event.x, event.y)
+    generateImage(event.x,event.y)
 
 
 
-canvas.pack(side=LEFT)
+#######################################################################
+    
+class Grid():   #This generates the empty grid #INCLUDES THE WALLS AROUND THE GRID#
+    def __init__(self,xSize,ySize):
+        self.xSize = xSize
+        self.ySize = ySize
+    def testout(self,x,y):
+        grid1[x][y]=4
+        self.PrintGrid(grid1)
+    def Generate(self):   
+        y = []
+        i = 0
+        while i in range(self.ySize):
+            z=0
+            x = []
+            while z in range(self.xSize):
+                if(z==0 or z==self.xSize-1 or i==0 or i==self.ySize-1):
+                    x.append(1)
+                    rect = canvas.create_rectangle(z*10, i*10, z*10 + 10, i*10+ 10, fill="black")
+                    coords = canvas.coords(rect)
+                else:
+                    x.append(0)
+                z+=1
+            y.append(x)
+            i+=1
+        return y
+    def PlaceDirt(self,amount):
+        i=0
+        self.dirtx = []
+        self.dirty = []
+        while(i<amount):
+            randx = random.randint(0,self.xSize)
+            randy = random.randint(0,self.ySize)
+            try:
+                if(grid1[randy][randx] == 0 and random.random() <((amount-i)/mapsize)):
+                    grid1[randy][randx] = 2
+                    self.dirtx.append(randx)
+                    self.dirty.append(randy)
+                    i+=1
+                    canvas.create_rectangle(randx*10, randy*10, randx*10 + 10, randy*10+ 10, fill="red")
+            except IndexError:
+                continue
+    def PrintGrid(self,grid):
+        i=0
+        while(i<self.ySize):
+            print(grid[i])
+            i+=1
+            
+    def PlaceWalls(self,grid):
+        i = 1
+        while i in range(self.ySize):
+            z = 1
+            while z in range(int(self.xSize)):
+                    if(grid[i][z] == 0):
+                        it = 0
+                        maxWallSize = random.randint(1,5)
+                        while(it<maxWallSize):
+                            try:
+                                grid[i][z+it]=1
+                                canvas.create_rectangle((z+it)*10, i*10, (z+it)*10 + 10, i*10+ 10, fill="black")
+                                it+=1
+                            except IndexError:
+                                break
+                        z=z+maxWallSize+1
+                    z+=1
+            i+=2
+    def GetySize(self):
+        return self.ySize
+    def GetxSize(self):
+        return self.xSize
+########################################################################################################
 
+class Roomba():
+    def __init__(self,grid,gridobj):
+        self.index = 0
+        self.score = 0
+        while True:
+            roombaCoordx = random.randint(0,gridobj.GetxSize()//4)
+            roombaCoordy= random.randint(0,gridobj.GetySize()//4)
+            if(grid[roombaCoordy][roombaCoordx] == 0):
+                self.roomba = canvas.create_rectangle(roombaCoordx*10 , roombaCoordy*10,roombaCoordx*10 + 10,roombaCoordy*10 + 10,fill="green")
+                grid[roombaCoordy][roombaCoordx] = 'R'
+                self.rx = roombaCoordx
 
-#Right side of the interface where it will be displayed buttons, etc.
-RightFrame= Frame(window, width = 350, height = 650, relief = "raise")
-#Start button 
-sbutton = Button(window, text = "Start", command = grid)
-sbutton.pack(side = TOP)
- 
+                self.ry = roombaCoordy
+                break
+            
+    def ChaseDirt(self,grid,gridobj):
+        time.sleep(0.01)
+        canvas.delete(self.roomba)
+        print("ry",self.ry,"rx",self.rx,"DIRTY",gridobj.dirty[self.index],"DIRTX",gridobj.dirtx[self.index], " INDEX " , self.index,"Score ", self.score*10)
+        if(self.ry < gridobj.dirty[self.index] and self.rx < gridobj.dirtx[self.index]):
+            grid[self.ry][self.rx]=0
+            self.ry+=1
+            self.rx+=1
+        elif(self.ry < gridobj.dirty[self.index] and self.rx > gridobj.dirtx[self.index]):
+            grid[self.ry][self.rx]=0
+            self.ry+=1
+            self.rx-=1
+        elif(self.ry > gridobj.dirty[self.index] and self.rx < gridobj.dirtx[self.index]):
+            grid[self.ry][self.rx]=0
+            self.ry-=1
+            self.rx+=1
+        elif(self.ry > gridobj.dirty[self.index] and self.rx > gridobj.dirtx[self.index]):
+            grid[self.ry][self.rx]=0
+            self.ry-=1
+            self.rx-=1
+        elif(self.ry == gridobj.dirty[self.index] and self.rx < gridobj.dirtx[self.index]):
+            grid[self.ry][self.rx]=0
+            self.rx+=1
+        elif(self.ry == gridobj.dirty[self.index] and self.rx > gridobj.dirtx[self.index]):
+            grid[self.ry][self.rx]=0
+            self.rx-=1
+        elif(self.ry < gridobj.dirty[self.index] and self.rx == gridobj.dirtx[self.index]):
+            grid[self.ry][self.rx]=0
+            self.ry+=1
+        elif(self.ry > gridobj.dirty[self.index] and self.rx == gridobj.dirtx[self.index]):
+            grid[self.ry][self.rx]=0
+            self.ry-=1
+        else:
+            self.index+=1
+            self.score = self.score + 1
+            self.score = canvas.create_text(100,100,text = self.score*10, anchor = NW)
+            self.roomba = canvas.create_rectangle(self.rx*10 , self.ry*10,self.rx*10 + 10,self.ry*10 + 10,fill="white")
+            
 
- #In Progress.
+            
+        grid[self.ry][self.rx]="R"
+        self.roomba = canvas.create_rectangle(self.rx*10 , self.ry*10,self.rx*10 + 10,self.ry*10 + 10,fill="blue")
 
+        
 
+score = Roomba.ChaseDirt
+#################################################################################################################################
+
+    
+#creating a fuction with will allow us to generate an another level placing walls into the grid         
+def start():
+    win = Tk().withdraw()
+    prompt = messagebox.askyesno("Roomba!","Do you want to add dirt manually")
+    grid = Grid((win_width-350)//10,win_height//10)
+    grid1 = grid.Generate()
+    grid.PlaceWalls(grid1)
+    grid.PrintGrid(grid1)
+
+   
+    if(prompt==True):
+        print("doesnot work")
+    else:
+        grid.PlaceDirt(win_height//10)
+        
+#a Quit Function
 def on_closing():
-    if messagebox.askokcancel("Quit", "Do you want to quit?"):
-        window.destroy()
-#Quit button
-endbutton = Button(window,text = "Quit", command = on_closing)
+    if messagebox.askokcancel("Quit","Do you want to quit?"):
+        win.destroy()
+
+#########################################################################################################
+        
+win = Tk().withdraw()
+prompt = messagebox.askyesno("Roomba!","Do you want to add dirt manually")
+win = Tk()
+win.resizable(0,0)
+win.title("Roomba")
+win_height=650
+win_width=1240
+mapsize = ((win_height*(win_width-240))//100)
+win.configure(width=win_width,height=win_height, bg="white")
+
+
+###################################################################
+RightFrame = Canvas(win,width =240,height=650,bg="grey")
+RightFrame.place(x=1001,y=0,anchor = NW)
+
+endbutton = Button(RightFrame, text = "Quit", command = on_closing)
 endbutton.pack(side = BOTTOM)
 
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="Score: ")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
+w = Label(RightFrame, text="")
+w.pack(fill=X,pady=10)
 
-RightFrame.pack()
-#end of the GUI window
-window.protocol("WM_DELETE_WINDOW", on_closing)
-window.mainloop()
+check = Button(RightFrame, text = "Do you want to generate an another level?", command = start)
+check.pack(side=LEFT)
+
+
+####################################################################
+canvas = Canvas(win,width=win_width-240,height=win_height) 
+canvas.place(x=0,y=0, anchor = NW)
+canvas.bind("<Key>", key)                         #Take part from the Generating image function
+canvas.bind("<Button-1>", callback)               #Take part from the Generating image function
+
+
+grid = Grid((win_width-240)//10,win_height//10)
+grid1 = grid.Generate()
+grid.PlaceWalls(grid1)
+
+if(prompt==True):
+    print("doesnot work")
+else:
+    grid.PlaceDirt(win_height//10)
+
+Tk.update(win)
+grid.PrintGrid(grid1)
+
+roomba = Roomba(grid1,grid)
+
+
+#Gameloop should be here
+while True:
+    roomba.ChaseDirt(grid1,grid)
+    Tk.update(win)
+    grid.PrintGrid(grid1)
+
+
+
+win.resizable(width=False, height=False)
+win.mainloop()
+
+
+
