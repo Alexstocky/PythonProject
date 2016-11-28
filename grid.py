@@ -30,7 +30,7 @@ class grid:
         for h in range(height):
             self.grid.append([])
             for w in range(width):
-                self.grid[h].append({'Impass':False, 'Doggo':False})
+                self.grid[h].append({'Impass':False, 'Doggo':False, 'Roomba':False})
             tuple(self.grid[h])
         tuple(self.grid)
         self.addImpasses(impasses)
@@ -38,20 +38,19 @@ class grid:
         xn = -1
         yn = -1 
         for x in self.grid:
-            xn += 1
+            yn += 1
+            xn = 0
             for y in x:
-                yn += 1
                 if random.random() < numDirt/(len(self.grid)*len(x)-i) and y ['Impass'] == False: #Dirt is set randomly, probability = Amount of dirt to be placed/Number of blocks in which dirt can be placed. 
                     numDirt -= 1                                                           #The equations tends towards an even distibution, but allows variation.
                     y ['Dirt'] = True
-                    #Adding the coords of xn and xn to the dirtlist - list.
-                    self.dirtlist.append([xn,yn])
+                    #Adding the coords of xn and yn to the dirtlist - list.
+                    self.dirtlist.append([yn,xn])
                 else:
+                    xn += 1
                     y ['Dirt'] = False
                 i += 1
         #print(self.dirtlist)
-                
-
 
     def __str__(self): # Purely for testing purposes, this produces am ascii representation of the grid at a given time. 'X' for impass, 'D' for dirt, 'G' for Dog, ' ' for empty space and '&' if the dog stands on dirt
         s = ''
@@ -61,17 +60,33 @@ class grid:
                 char = ''
                 if x['Impass']:
                     char = 'X'
-                else:
-                    if x['Dirt']:
-                        if x['Doggo']:
+                elif x['Dirt']:
+                    if x['Doggo']:
                             char = '&'
-                        else:
-                            char = 'D'
-                    elif x['Doggo']:
-                        char = 'G'
                     else:
-                        char = ' '
+                            char = 'D'
+                elif x['Doggo']:
+                    char = 'G'
+                elif x['Roomba']:
+                    char = 'R'
+                else:
+                    char = ' '
                 s += '|'+char
             
+            s += '|'+'\n'
+        return s+'|'+'-'*(len(i)*2-1)+'|'+'\n'
+
+    def findDirt(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                self.grid[y][x] ['DV'] = max(abs(y-self.dirtlist[0][0]),abs(x-self.dirtlist[0][1]))
+
+    def dvPrint(self):
+        s = ''
+        for i in self.grid:
+            s += '|'+'-'*(len(i)*2-1)+'|'+'\n'
+            for x in i:
+                char = str(x['DV'])
+                s += '|'+char
             s += '|'+'\n'
         return s+'|'+'-'*(len(i)*2-1)+'|'+'\n'
