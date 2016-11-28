@@ -1,5 +1,4 @@
 from grid import grid
-import time
 
 class Roomba:
 
