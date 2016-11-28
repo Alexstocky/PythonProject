@@ -5,7 +5,6 @@ class Roomba:
     def __init__(self, grid, rl=(0,0)):
         self.rl = rl
         self.grid = grid
-        self.direclist = []
         grid.grid[rl[0]][rl[1]] ['Roomba'] = True
 
     def move(self, inst): #Edits the values of roomba's x&y to do the actual moving
