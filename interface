@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk 
 from tkinter.ttk import *
+import winsound
 import random
 import time
 
@@ -11,6 +12,7 @@ import time
 # 1 - Impassable Object eg. wall/table/chair
 # 2 - Dirt
 
+
 ####################################################################
 #Generating an object by clicking on the grid
 def generateImage(x,y):
@@ -19,7 +21,7 @@ def generateImage(x,y):
 
 
 def key(event):
-    print ("pressed", repr(event.char))
+    print ("Pressed", repr(event.char))
 
 def callback(event):
     print ("Coord:", event.x, event.y)
@@ -150,7 +152,9 @@ class Roomba():
             self.index+=1
             self.score = self.score + 1
             self.score = canvas.create_text(100,100,text = self.score*10, anchor = NW)
+            winsound.PlaySound('misc001.wav',winsound.SND_FILENAME) #winsound added after each dirt picked up.
             self.roomba = canvas.create_rectangle(self.rx*10 , self.ry*10,self.rx*10 + 10,self.ry*10 + 10,fill="white")
+            
             
 
             
@@ -159,7 +163,6 @@ class Roomba():
 
         
 
-score = Roomba.ChaseDirt
 #################################################################################################################################
 
     
