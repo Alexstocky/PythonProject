@@ -1,13 +1,17 @@
 from grid import grid
 
+'''Moves within the grid and collects dirt, avoiding the dog. Represented as a True value in the ['Roomba'] key in the grid.'''
 class Roomba:
-
+    
+    '''Creates the roomba. grid is the grid object roomba uses. rl is the starting location.'''
     def __init__(self, grid, rl=(0,0)):
         self.rl = rl
+        #The grid object is saved in case the user does not call the grid object 'grid'
         self.grid = grid
         grid.grid[rl[0]][rl[1]] ['Roomba'] = True
 
-    def move(self, inst): #Edits the values of roomba's x&y to do the actual moving
+    '''Edits the values of roomba's x&y to do the actual moving. inst is a tuple containing values to added to the x or y values, these can be 1,0 or -1. findPath returns a compatable input.'''
+    def move(self, inst):
         x = min(max(self.rl[0]+inst[0],0),(len(self.grid.grid)-1))
         y = min(max(self.rl[1]+inst[1],0),(len(self.grid.grid[0])-1))
         if not self.grid.grid[x][y] ['Impass'] == True:
@@ -15,6 +19,7 @@ class Roomba:
             self.grid.grid[x][y] ['Roomba'] = True
             self.rl = (x,y)
 
+    '''Finds the direction to the nearest dirt and returns the changes to x and y needed as a tuple.'''
     def findPath(self):
         lowest = float('inf')
         for y in range(-1,2):
