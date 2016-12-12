@@ -8,7 +8,16 @@ class Roomba:
         self.rl = rl
         #The grid object is saved in case the user does not call the grid object 'grid'
         self.grid = grid
+        #Likewise for grid
+        grid.roomba = self
         grid.grid[rl[0]][rl[1]] ['Roomba'] = True
+        self.destlist = []
+        door = False
+        for i in self.grid.rooms:
+            self.destlist += i + [i[0]]
+        dirtlist = [i for i in self.grid.dirtlist for j in self.grid.rooms if i not in j]
+        self.destlist += dirtlist
+                    
 
     '''Edits the values of roomba's x&y to do the actual moving. inst is a tuple containing values to added to the x or y values, these can be 1,0 or -1. findPath returns a compatable input.'''
     def move(self, inst):
@@ -18,6 +27,7 @@ class Roomba:
             self.grid.grid[self.rl[0]][self.rl[1]] ['Roomba'] = False
             self.grid.grid[x][y] ['Roomba'] = True
             self.rl = (x,y)
+        #Pass that there is an impass, and set of instructions to deal with this.
 
     '''Finds the direction to the nearest dirt and returns the changes to x and y needed as a tuple.'''
     def findPath(self):
