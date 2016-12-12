@@ -12,7 +12,6 @@ class Roomba:
         grid.roomba = self
         grid.grid[rl[0]][rl[1]] ['Roomba'] = True
         self.destlist = []
-        door = False
         for i in self.grid.rooms:
             self.destlist += i + [i[0]]
         dirtlist = [i for i in self.grid.dirtlist for j in self.grid.rooms if i not in j]
