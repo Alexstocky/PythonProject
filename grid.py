@@ -16,14 +16,14 @@ class Grid:
         
    '''Allows cells to be changed to walls after __init__. Impasses is a list of lists, with each of the list containing the x,y coordinates of a cell to be an impass'''
    def addImpasses(self, impasses):
-        self.impasses += impasses
-        for x in impasses:
-            if x[0] >= self.height or x[1] >= self.width:
-                raise IndexError('Grid reference out of range')
-            self.grid[x[0]][x[1]] ['Impass'] = True
-            self.grid[x[0]][x[1]] ['Dirt'] = False
-         self.recoopDirt()
-
+      self.impasses += impasses
+      for x in impasses:
+         if x[0] >= self.height or x[1] >= self.width:
+            raise IndexError('Grid reference out of range')
+         self.grid[x[0]][x[1]] ['Impass'] = True
+         self.grid[x[0]][x[1]] ['Dirt'] = False
+      self.recoopDirt()
+         
    '''Recoops dirt that had walls built on it.'''
    def recoopDirt(self):
       curDirt = 0
@@ -32,17 +32,17 @@ class Grid:
             if x ['Dirt']:
                curDirt += 1
       curDirt = self.origDirt - curDirt
+      print(curDirt)
+      i = 0
       for y in range(len(self.grid)):
-            for x in range(len(self.grid[y])):
-                 if random.random() < curDirt/(len(self.grid)*len(self.grid[y])-i) and self.grid[y][x] ['Impass'] == False: 
-                    curDirt -= 1
-                    self.grid[y][x] ['Dirt'] = True
-                    self.dirtlist.append([x,y])
-                else:
-                    self.grid[y][x] ['Dirt'] = False
-                i += 1
+         for x in range(len(self.grid[y])):
+            if random.random() < curDirt/(len(self.grid)*len(self.grid[y])-i) and self.grid[y][x] ['Impass'] == False: 
+               curDirt -= 1
+               self.grid[y][x] ['Dirt'] = True
+               self.dirtlist.append([x,y])
+            i += 1
 
-   '''Generates a 'room', with walls surrounding and a record of the dirt within it. Coord is a dictionary, with each corner of the room labelled with it's ordinal direction e.g. 'NW' and is value a tuple containing it's coords. If the coordinate is outside the grid, leave it is false. Entrance is a tuple, with the first value the point along the entrance is on, and the second a letter representing the cardinal direction of the wall it is on e.g. 'S''''
+   '''Generates a 'room', with walls surrounding and a record of the dirt within it. Coord is a dictionary, with each corner of the room labelled with it's ordinal direction e.g. 'NW' and is value a tuple containing it's coords. If the coordinate is outside the grid, leave it is false. Entrance is a tuple, with the first value the point along the entrance is on, and the second a letter representing the cardinal direction of the wall it is on e.g. 'S'''
    def genRoom(self,Coord, Entrance):
       Entrance[1] = Entrance[1].upper()
       room = []
@@ -97,7 +97,6 @@ class Grid:
                 self.grid[h].append({'Impass':False, 'Doggo':False, 'Roomba':False})
             tuple(self.grid[h])
         tuple(self.grid)
-        self.addImpasses(impasses)
         i = 0
         for y in range(len(self.grid)):
             for x in range(len(self.grid[y])):
@@ -109,6 +108,7 @@ class Grid:
                 else:
                     self.grid[y][x] ['Dirt'] = False
                 i += 1
+        self.addImpasses(impasses)
 
    '''Purely for testing purposes, this produces am text representation of the grid at a given time. DV determines whether DV or general grid is produced, defaults to general grid. For general grid: 'X' for impass, 'D' for dirt, 'G' for dog, 'R' for roomba, ' ' for empty space and '&' if the dog stands on dirt. DV mode produces the grid with each cell containing it's DV value. The cell containing zero contains the roomba'''
    def __str__(self, DV=False):
@@ -146,7 +146,7 @@ class Grid:
             return s+'|'+'-'*(len(i)*2-1)+'|'+'\n'
 
    '''Iterates the grid, finding the number of moves between the roomba and every cell, and assigns it to the cell as 'DV'. Fails if roomba is uncalled'''
-   def findDirt(self):
+   def findTarget(self,target):
         for y in range(self.height):
             for x in range(self.width):
-                self.grid[x][y] ['DV'] = max(abs(y-self.roomba.destlist[0][0]),abs(x-self.roomba.destlist[0][1]))
+                self.grid[x][y] ['DV'] = max(abs(y-target[0]),abs(x-target[1]))
