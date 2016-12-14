@@ -32,7 +32,6 @@ class Grid:
             if x ['Dirt']:
                curDirt += 1
       curDirt = self.origDirt - curDirt
-      print(curDirt)
       i = 0
       for y in range(len(self.grid)):
          for x in range(len(self.grid[y])):
@@ -42,8 +41,8 @@ class Grid:
                self.dirtlist.append([x,y])
             i += 1
 
-   '''Generates a 'room', with walls surrounding and a record of the dirt within it. Coord is a dictionary, with each corner of the room labelled with it's ordinal direction e.g. 'NW' and is value a tuple containing it's coords. If the coordinate is outside the grid, leave it is false. Entrance is a tuple, with the first value the point along the entrance is on, and the second a letter representing the cardinal direction of the wall it is on e.g. 'S'''
-   def genRoom(self,Coord, Entrance):
+   '''Generates a 'room', with walls surrounding and a record of the dirt within it. Coord is a dictionary, with each corner of the room labelled with it's ordinal direction e.g. 'NW' and is value a list (not tuple) containing it's coords. If the coordinate is outside the grid, leave it is false. Entrance is a another list (still not a tuple), with the first value the point along the entrance is on, and the second a letter representing the cardinal direction of the wall it is on e.g. 'S'''
+   def genRoom(self, Coord, Entrance):
       Entrance[1] = Entrance[1].upper()
       room = []
       if Coord['NW'][0]:
@@ -117,8 +116,11 @@ class Grid:
             for i in self.grid:
                 s += '|'+'-'*(len(i)*2-1)+'|'+'\n'
                 for x in i:
-                    char = str(x['DV'])
-                    s += '|'+char
+                     if x ['Roomba']:
+                        char = 'R'
+                     else:
+                        char = str(x['DV'])
+                     s += '|'+char
                 s += '|'+'\n'
             return s+'|'+'-'*(len(i)*2-1)+'|'+'\n'
         else:
@@ -150,3 +152,8 @@ class Grid:
         for y in range(self.height):
             for x in range(self.width):
                 self.grid[x][y] ['DV'] = max(abs(y-target[0]),abs(x-target[1]))
+'''Example gamecycle
+grid = Grid(10,10,4)
+grid.genRoom({'NW':[False,False], 'NE':[3,False], 'SW':[False,2], 'SE':[3,2]},[2,'s'])
+print(grid)
+'''
